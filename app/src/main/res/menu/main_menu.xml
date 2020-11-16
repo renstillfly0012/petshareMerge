@@ -42,19 +42,33 @@
                     android:title="View Fosters"
                     android:icon="@drawable/ic_view_profile"
                     />
-
-                <item
-                    android:id="@+id/nav_logout"
-                    android:title="Logout"
-                    android:icon="@drawable/ic_logout"
-                    />
                 </group>
             </menu>
 
         </item>
 
+    <item
+        android:title="QR Code">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_admin_qr_scanner"
+                    android:title="QR Code Scanner"
+                    />
+            </group>
+        </menu>
+    </item>
 
-
-
-
+    <item
+        android:title="Logout">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_logout"
+                    android:title="Logout"
+                    android:icon="@drawable/ic_logout"
+                    />
+            </group>
+        </menu>
+    </item>
 </menu>

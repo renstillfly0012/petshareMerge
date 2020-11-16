@@ -10,7 +10,9 @@ import okhttp3.Response;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.JsonToken;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +25,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -33,9 +36,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOError;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.zip.Inflater;
 
 public class ViewFosters extends AppCompatActivity {
     private String TAG = "ViewFosters";
@@ -44,13 +49,20 @@ public class ViewFosters extends AppCompatActivity {
     ProgressDialog dialog;
     private HashMap<String, String> jsonUserData;
     FosterJsonParser jsonParser;
+
     ImageView imgview;
     ImageButton imgbutton;
+
     AlertDialog.Builder alertDialog;
     AlertDialog Adialog;
+
     EditText txtname,txtemail,txtpassword,txtconfirm;
     Button popsubmit,cancel;
     private String RNAME, REMAIL, RPASSWORD, RCONFIRM;
+
+    EditText AEname,AEpopemail,AEpoppassword,AEpopconfirm;
+    TextView AEtxtname, AEtxtemail,AEtxtrole, Aetxtstatus;
+    Button AEbtnSubmit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,11 +74,10 @@ public class ViewFosters extends AppCompatActivity {
         arrayList = new ArrayList<>();
         lv = findViewById(R.id.listview);
 
-
         final OkHttpClient client = new OkHttpClient();
         final String url = Url.fosterurl;
 
-        Request request = new Request.Builder()
+        final Request request = new Request.Builder()
                 .url(url)
                 .build();
 
@@ -85,26 +96,104 @@ public class ViewFosters extends AppCompatActivity {
                         public void run() {
                             try{
                                 //JSONObject reader = new JSONObject(myResponse);
-                                JSONArray fosters = new JSONArray(myResponse);
+                                final JSONArray fosters = new JSONArray(myResponse);
                                 for(int i = 0;i < fosters.length() ;i++){
                                     JSONObject read = fosters.getJSONObject(i);
-                                    String NAME = read.getString("name");
+                                    final String NAME = read.getString("name");
                                     String STATUS = read.getString("status");
                                     String IMG = read.getString("image");
+                                    String ROLE = read.getString("role_id");
 
                                     Log.e(TAG,"sadviewfoster: " + IMG);
 
-                                    HashMap<String,String> data = new HashMap<>();
+                                    final HashMap<String,String> data = new HashMap<>();
                                     data.put("name",NAME);
                                     data.put("status",STATUS);
                                     data.put("image",IMG);
+                                    data.put("role_id",ROLE);
 
                                     arrayList.add(data);
                                     //Glide.with(ViewFosters.this).load("https://pet-share.com/assets/images/" + IMG).into(imgview);
-                                    ListAdapter adapter = new SimpleAdapter(ViewFosters.this,
+                                    final ListAdapter adapter = new SimpleAdapter(ViewFosters.this,
                                             arrayList,R.layout.single_foster_data,new String[]{"name","status","image"},
                                             new int[]{R.id.foster_name,R.id.foster_status,R.id.foster_image});
+                                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                        @Override
+                                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                            int index = i;
+                                            //final String[] NAME = {""};
+                                            //final String[] myResponse = new String[1];
+                                            alertDialog = new AlertDialog.Builder(ViewFosters.this);
+                                            view = getLayoutInflater().inflate(R.layout.activity_admin_edit_fosters,null);
+                                            String position = lv.getItemAtPosition(index).toString();
+                                            try {
+                                                jsonUserData = new HashMap<String,String>();
+                                                jsonUserData.put("name",new JSONObject(position).getString("name"));
+                                                jsonUserData.put("status",new JSONObject(position).getString("status"));
+                                                jsonUserData.put("role_id",new JSONObject(position).getString("role_id"));
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
 
+                                            AEbtnSubmit = view.findViewById(R.id.popup_admin_edit_foster_btnSubmit);
+                                            AEname = view.findViewById(R.id.popup_admin_edit_foster_fname);
+                                            AEpopemail = view.findViewById(R.id.popup_admin_edit_foster_email);
+                                            AEpoppassword = view.findViewById(R.id.popup_admin_edit_foster_password);
+                                            AEpopconfirm = view.findViewById(R.id.popup_admin_edit_foster_confirm);
+                                            AEtxtname = view.findViewById(R.id.popup_admin_edit_foster_textname);
+                                            AEtxtemail = view.findViewById(R.id.popup_admin_edit_foster_textemail);
+                                            AEtxtrole = view.findViewById(R.id.popup_admin_edit_foster_textrole);
+                                            Aetxtstatus = view.findViewById(R.id.popup_admin_edit_foster_textstatus);
+
+                                                AEtxtname.setText(jsonUserData.get("name"));
+                                                Aetxtstatus.setText(jsonUserData.get("status"));
+                                                if(jsonUserData.get("role_id") == String.valueOf(1)){
+                                                    AEtxtrole.setText("Admin");
+                                                }else if(jsonUserData.get("role_id")== String.valueOf(2)){
+                                                    AEtxtrole.setText("Foster");
+                                                }
+                                                AEname.setText(jsonUserData.get("name"));
+                                                   Log.i(TAG,"fail: " + position + " " + " " + jsonUserData.get("name"));
+
+                            //                client.newCall(request).enqueue(new Callback() {
+                            //                    @Override
+                            //                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                            //
+                            //                    }
+                            //
+                            //                    @Override
+                            //                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            //                        if(response.isSuccessful()){
+                            //                            String myResponse = response.body().toString();
+                            //                            jsonUserData = new HashMap<String,String>();
+                            //                            try {
+                            //                                jsonUserData.put("name",new JSONObject(myResponse).getString("name"));
+                            //                                Intent intent = new Intent(getBaseContext(),ViewFosters.class);
+                            //                                intent.putExtra("name",jsonUserData.get("name"));
+                            //
+                            //
+                            //                            } catch (JSONException e) {
+                            //                                e.printStackTrace();
+                            //                            }
+                            //                        }
+                            //                    }
+                            //                });
+
+
+                            //                AEbtnSubmit.setOnClickListener(new View.OnClickListener() {
+                            //                    @Override
+                            //                    public void onClick(View view) {
+                            //                        Intent intent = getIntent();
+                            //                        String hard = intent.getStringExtra("name");
+                            //                        Toast.makeText(getBaseContext(),"base: " + hard,Toast.LENGTH_SHORT).show();
+                            //                    }
+                            //                });
+
+                                            alertDialog.setView(view);
+                                            Adialog = alertDialog.create();
+                                            Adialog.show();
+                                        }
+                                    });
                                     lv.setAdapter(adapter);
                                 }
 
@@ -194,15 +283,70 @@ public class ViewFosters extends AppCompatActivity {
 //            }
 //        });
 
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(ViewFosters.this,"na click: " + i,Toast.LENGTH_SHORT).show();
-            }
-        });
+//        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(final AdapterView<?> adapterView, View view, int i, long l) {
+//                final int index = i;
+//                final long h = l;
+//                final String[] NAME = {""};
+////                final String[] myResponse = new String[1];
+//                alertDialog = new AlertDialog.Builder(ViewFosters.this);
+//                view = getLayoutInflater().inflate(R.layout.activity_admin_edit_fosters,null);
+//
+//                AEbtnSubmit = view.findViewById(R.id.popup_admin_edit_foster_btnSubmit);
+//                AEname = view.findViewById(R.id.popup_admin_edit_foster_fname);
+//                AEpopemail = view.findViewById(R.id.popup_admin_edit_foster_email);
+//                AEpoppassword = view.findViewById(R.id.popup_admin_edit_foster_password);
+//                AEpopconfirm = view.findViewById(R.id.popup_admin_edit_foster_confirm);
+//                AEtxtname = view.findViewById(R.id.popup_admin_edit_foster_textname);
+//                AEtxtemail = view.findViewById(R.id.popup_admin_edit_foster_textemail);
+//                AEtxtrole = view.findViewById(R.id.popup_admin_edit_foster_textrole);
+//                Aetxtstatus = view.findViewById(R.id.popup_admin_edit_foster_textstatus);
+//
+//
+////                client.newCall(request).enqueue(new Callback() {
+////                    @Override
+////                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+////
+////                    }
+////
+////                    @Override
+////                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+////                        if(response.isSuccessful()){
+////                            String myResponse = response.body().toString();
+////                            jsonUserData = new HashMap<String,String>();
+////                            try {
+////                                jsonUserData.put("name",new JSONObject(myResponse).getString("name"));
+////                                Intent intent = new Intent(getBaseContext(),ViewFosters.class);
+////                                intent.putExtra("name",jsonUserData.get("name"));
+////
+////
+////                            } catch (JSONException e) {
+////                                e.printStackTrace();
+////                            }
+////                        }
+////                    }
+////                });
+//
+//
+////                AEbtnSubmit.setOnClickListener(new View.OnClickListener() {
+////                    @Override
+////                    public void onClick(View view) {
+////                        Intent intent = getIntent();
+////                        String hard = intent.getStringExtra("name");
+////                        Toast.makeText(getBaseContext(),"base: " + hard,Toast.LENGTH_SHORT).show();
+////                    }
+////                });
+//
+//                alertDialog.setView(view.getRootView());
+//                Adialog = alertDialog.create();
+//                Adialog.show();
+//            }
+//        });
         lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                final int index = i;
                 PopupMenu popupMenu = new PopupMenu(view.getContext(),view);
                 popupMenu.inflate(R.menu.foster_long_click);
                 popupMenu.show();
@@ -212,18 +356,18 @@ public class ViewFosters extends AppCompatActivity {
                         int id = menuItem.getItemId();
                         if (id == R.id.delete_user) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(ViewFosters.this);
-                            builder.setTitle("Are you sure you want to delete this motherfucker?");
-                            builder.setMessage("Delete");
+                            builder.setTitle("Delete");
+                            builder.setMessage("Are you sure you want to delete this motherfucker?");
                             builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    Toast.makeText(getBaseContext(), "joke lang: " + i, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getBaseContext(), "joke lang: " + index, Toast.LENGTH_SHORT).show();
                                 }
                             });
                             builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    Toast.makeText(getBaseContext(), "Canceled!" + i, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getBaseContext(), "Canceled!" + index, Toast.LENGTH_SHORT).show();
                                 }
                             });
                             AlertDialog ad = builder.create();
@@ -317,5 +461,9 @@ public class ViewFosters extends AppCompatActivity {
         Toast.makeText(getBaseContext(),
                 message,
                 Toast.LENGTH_SHORT).show();
+    }
+
+    public void delete_foster(String DEL){
+
     }
 }

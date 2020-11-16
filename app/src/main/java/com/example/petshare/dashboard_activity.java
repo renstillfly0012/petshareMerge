@@ -150,6 +150,10 @@ public class dashboard_activity extends AppCompatActivity implements NavigationV
                 intent.putExtra("KEY_NAME_INT",NAME);
                 startActivity(intent);
                 break;
+            case R.id.nav_admin_qr_scanner:
+                intent = new Intent(getBaseContext(),AdminQRCodeScanner.class);
+                startActivity(intent);
+                break;
             case R.id.nav_logout:
                 intent = new Intent(this, MainActivity.class);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
