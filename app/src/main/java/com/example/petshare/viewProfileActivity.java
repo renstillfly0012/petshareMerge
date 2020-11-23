@@ -107,20 +107,16 @@ public class viewProfileActivity extends AppCompatActivity implements Navigation
         switch(menuItem.getItemId()){
             case R.id.nav_home:
                 break;
-            case R.id.nav_adopt:
-                intent = new Intent(this, howToAdopt.class);
-                startActivity(intent);
-                break;
-            case R.id.nav_report:
-                break;
-            case R.id.nav_donate:
-                break;
             case R.id.nav_view_fosters:
                 intent = new Intent(this, ViewFosters.class);
                 startActivity(intent);
                 break;
             case R.id.nav_edit:
                 intent = new Intent(this, editProfileActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.nav_report:
+                intent = new Intent(getBaseContext(),ViewReports.class);
                 startActivity(intent);
                 break;
             case R.id.nav_logout:

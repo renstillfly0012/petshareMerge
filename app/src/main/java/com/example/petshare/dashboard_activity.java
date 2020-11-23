@@ -9,6 +9,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -18,21 +19,38 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class dashboard_activity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
-    TextView txtUser,txtRole;
+    ArrayList<HashMap<String,String>> arrayList;
+    TextView txtUser,txtRole,usercount,petcount,donationcount,reportcount;
     ImageView imgUserImg;
     Log log;
     String id,name,role_id,image,status,imgUrl;
     private Intent intent;
     private SharedPreferences sharedPreferences;
+    ViewFosters viewFosters;
+    String Ucount,Pcount;
 
 
     @SuppressLint("WrongViewCast")
@@ -44,15 +62,81 @@ public class dashboard_activity extends AppCompatActivity implements NavigationV
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.toolbar);
+        usercount = findViewById(R.id.user_count);
+        petcount = findViewById(R.id.pet_count);
+        donationcount = findViewById(R.id.donation_count);
+        reportcount = findViewById(R.id.report_count);
+        arrayList = new ArrayList<>();
 
 
+        final OkHttpClient client = new OkHttpClient();
+        final String url = Url.fosterurl;
+        final String purl = Url.peturl;
+
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if(response.isSuccessful()){
+                    final String myResponse = response.body().string();
+                    dashboard_activity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                final JSONArray foster = new JSONArray(myResponse);
+                                Ucount = String.valueOf(foster.length());
+                                Log.e("dash","dash " + Ucount);
+                                usercount.setText(Ucount);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+        request = new Request.Builder()
+                .url(purl)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if(response.isSuccessful()) {
+                    final String myResponse = response.body().string();
+                    dashboard_activity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                JSONArray pets = new JSONArray(myResponse);
+                                Pcount = String.valueOf(pets.length());
+                                petcount.setText(Pcount);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            }
+        });
 //
 //        Menu menu = navigationView.getMenu();
 //        menu.findItem(R.id.nav_logout).setVisible(false);
 //        menu.findItem(R.id.nav_view_profile).setVisible(false);
-//        menu.findItem(R.id.nav_edit).setVisible(false);
-
-
+//        menu.findItem(R.id.nav_edit).setVisible(false)
 
         //getting data from mainACtivity
         Intent intent = getIntent();
@@ -61,6 +145,8 @@ public class dashboard_activity extends AppCompatActivity implements NavigationV
         String ROLE_ID = intent.getStringExtra("KEY_ROLE_ID");
         String IMAGE = intent.getStringExtra("KEY_IMAGE_INT");
         String STATUS = intent.getStringExtra("KEY_STATUS_INT");
+        String USERCOUNT = intent.getStringExtra("USER_KEY_COUNT");
+
 
 //        sharedPreferences = getSharedPreferences("KEY_USER_INFO", MODE_PRIVATE);
 //        id = sharedPreferences.getString("KEY_ID", null);
@@ -121,20 +207,16 @@ public class dashboard_activity extends AppCompatActivity implements NavigationV
         switch(menuItem.getItemId()){
             case R.id.nav_home:
                 break;
-            case R.id.nav_adopt:
-                intent = new Intent(this, howToAdopt.class);
+            case R.id.nav_view_pet:
+                intent = new Intent(this,ViewPets.class);
                 startActivity(intent);
-                break;
-            case R.id.nav_report:
-                break;
-            case R.id.nav_donate:
                 break;
             case R.id.nav_view_fosters:
                 intent = new Intent(this, ViewFosters.class);
                 startActivity(intent);
                 break;
             case R.id.nav_edit:
-                Intent intent = getIntent();
+                intent = getIntent();
                 String ID = intent.getStringExtra("KEY_ID_INT");
                 String NAME = intent.getStringExtra("KEY_NAME_INT");
                 String ROLE_ID = intent.getStringExtra("KEY_ROLE_ID");
@@ -148,6 +230,10 @@ public class dashboard_activity extends AppCompatActivity implements NavigationV
                 intent.putExtra("KEY_IMAGE_INT",IMAGE);
                 intent.putExtra("KEY_EMAIL_INT",EMAIL);
                 intent.putExtra("KEY_NAME_INT",NAME);
+                startActivity(intent);
+                break;
+            case R.id.nav_report:
+                intent = new Intent(getBaseContext(),ViewReports.class);
                 startActivity(intent);
                 break;
             case R.id.nav_admin_qr_scanner:

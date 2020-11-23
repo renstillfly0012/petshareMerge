@@ -33,22 +33,19 @@ public class responseService {
     /**
      * No args constructor for use in serialization
      *
-     */
-    public responseService() {
-    }
-
-    /**
-     *
-     * @param image
-     * @param createdAt
-     * @param deletedAt
-     * @param roleId
      * @param name
-     * @param id
-     * @param status
-     * @param updatedAt
+     * @param s1
+     * @param s2
      */
-    public responseService(int id, String name, Object roleId, String image, String status, String createdAt, String updatedAt, Object deletedAt) {
+//    public responseService(String name, String s1, String s2) {
+//    }
+
+    /**@param id
+     *  @param name
+     * @param roleId
+     * @param status
+     */
+    public responseService(int id,String name, Object roleId, String status) {
         super();
         this.id = id;
         this.name = name;
@@ -76,8 +73,8 @@ public class responseService {
         this.name = name;
     }
 
-    public Object getRoleId() {
-        return roleId;
+    public String getRoleId() {
+        return (String) roleId;
     }
 
     public void setRoleId(Object roleId) {

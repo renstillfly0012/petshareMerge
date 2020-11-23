@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AdminEditPets">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/popup_admin_edit_pet_image"
+        android:layout_width="146dp"
+        android:layout_height="164dp"
+        android:layout_marginEnd="224dp"
+        android:layout_marginStart="41dp"
+        android:layout_marginTop="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.061"
+        app:srcCompat="@drawable/logo" />
+
+    <EditText
+        android:id="@+id/popup_admin_edit_pet_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/rectangle_2"
+        android:ems="10"
+        android:gravity="center|center_horizontal"
+        android:hint="Name"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.533"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/popup_admin_edit_pet_image" />
+
+    <EditText
+        android:id="@+id/popup_admin_edit_pet_age"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="9dp"
+        android:background="@drawable/rectangle_2"
+        android:ems="10"
+        android:gravity="center|center_horizontal"
+        android:hint="Age"
+        app:layout_constraintEnd_toEndOf="@+id/popup_admin_edit_pet_name"
+        app:layout_constraintStart_toStartOf="@+id/pop_fname"
+        app:layout_constraintTop_toBottomOf="@+id/popup_admin_edit_pet_name" />
+
+    <EditText
+        android:id="@+id/popup_admin_edit_pet_breed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="9dp"
+        android:background="@drawable/rectangle_2"
+        android:ems="10"
+        android:gravity="center|center_horizontal"
+        android:hint="Breed"
+        app:layout_constraintEnd_toEndOf="@+id/popup_admin_edit_pet_age"
+        app:layout_constraintTop_toBottomOf="@+id/popup_admin_edit_pet_age" />
+
+    <EditText
+        android:id="@+id/popup_admin_edit_pet_desc"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="56dp"
+        android:layout_marginStart="55dp"
+        android:layout_marginTop="13dp"
+        android:bufferType="spannable"
+        android:gravity="top"
+        android:hint="Story"
+        android:inputType="textCapSentences|textMultiLine"
+        android:minHeight="120dp"
+        android:overScrollMode="ifContentScrolls"
+        android:scrollbarStyle="insideInset"
+        android:scrollbars="vertical"
+        android:selectAllOnFocus="true"
+        android:text="Inventore earum repellendus est et doloribus ex non. Iste nostrum quo quia error deleniti porro eos. Quas illo iure accusantium. Eaque non expedita voluptatem. Repellat quia sed illum ut quisquam architecto."
+        android:textIsSelectable="true"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/popup_admin_edit_pet_breed"
+        tools:text="" />
+
+    <Button
+        android:id="@+id/popup_admin_edit_pet_btnSubmit"
+        android:layout_width="101dp"
+        android:layout_height="58dp"
+        android:layout_marginEnd="95dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="27dp"
+        android:background="@drawable/cancel1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/popup_admin_edit_pet_btnCancel"
+        app:layout_constraintTop_toBottomOf="@+id/popup_admin_edit_pet_desc" />
+
+    <Button
+        android:id="@+id/popup_admin_edit_pet_btnCancel"
+        android:layout_width="101dp"
+        android:layout_height="58dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginStart="95dp"
+        android:layout_marginTop="27dp"
+        android:background="@drawable/login1"
+        app:layout_constraintEnd_toStartOf="@+id/popup_admin_edit_pet_btnSubmit"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/popup_admin_edit_pet_desc" />
+
+    <TextView
+        android:id="@+id/popup_admin_pet_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="84dp"
+        android:text="Status here"
+        android:textColor="@color/colorBlack"
+        android:textSize="13sp"
+        app:layout_constraintStart_toEndOf="@+id/popup_admin_edit_pet_image"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/popup_admin_edit_pet_qr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="22dp"
+        android:text="@string/show_pet_health_status"
+        android:textColor="@color/colorGreen"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@+id/popup_admin_edit_pet_image"
+        app:layout_constraintTop_toBottomOf="@+id/popup_admin_pet_status" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

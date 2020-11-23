@@ -21,12 +21,8 @@ public class howToAdopt extends AppCompatActivity {
         adapter=new HowViewPagerAdapater(this);
         viewPager.setAdapter(adapter);
 
+
         if(isAdoptAlready()){
-            Intent intent = new Intent(howToAdopt.this,viewAllPets.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK| Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        }
-        else{
             SharedPreferences.Editor editor = getSharedPreferences("howtoadopt", MODE_PRIVATE).edit();
             editor.putBoolean("howtoadopt",true);
             editor.commit();

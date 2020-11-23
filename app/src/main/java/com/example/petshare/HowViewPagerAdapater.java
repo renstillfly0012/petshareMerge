@@ -124,14 +124,6 @@ public class HowViewPagerAdapater extends PagerAdapter {
                         howToAdopt.viewPager.setCurrentItem(position-1);
                     }
                 });
-
-                btnNext.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        intent = new Intent(ctx, viewAllPets.class);
-                        ctx.startActivity(intent);
-                    }
-                });
                 break;
 
         }

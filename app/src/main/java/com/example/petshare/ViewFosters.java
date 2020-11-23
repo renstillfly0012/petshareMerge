@@ -6,13 +6,16 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Field;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.JsonToken;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,26 +32,33 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.SerializedName;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
-import java.io.IOError;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.zip.Inflater;
 
 public class ViewFosters extends AppCompatActivity {
+    TextView usercount;
+
     private String TAG = "ViewFosters";
     private ListView lv;
     ArrayList<HashMap<String,String>> arrayList;
     ProgressDialog dialog;
     private HashMap<String, String> jsonUserData;
     FosterJsonParser jsonParser;
+    Intent intent;
+    SharedPreferences sharedPreferences;
 
     ImageView imgview;
     ImageButton imgbutton;
@@ -63,6 +73,15 @@ public class ViewFosters extends AppCompatActivity {
     EditText AEname,AEpopemail,AEpoppassword,AEpopconfirm;
     TextView AEtxtname, AEtxtemail,AEtxtrole, Aetxtstatus;
     Button AEbtnSubmit;
+
+    //Updatefoster
+    String name,email,role,status,password,confirm;
+    int id;
+    int convertedId;
+    private Constant constant;
+
+    //DELETE FOSTER
+    private ApiUser apiUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +107,7 @@ public class ViewFosters extends AppCompatActivity {
             }
 
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull final Response response) throws IOException {
                 if(response.isSuccessful()){
                     final String myResponse = response.body().string();
                     ViewFosters.this.runOnUiThread(new Runnable() {
@@ -100,11 +119,11 @@ public class ViewFosters extends AppCompatActivity {
                                 for(int i = 0;i < fosters.length() ;i++){
                                     JSONObject read = fosters.getJSONObject(i);
                                     final String NAME = read.getString("name");
-                                    String STATUS = read.getString("status");
+                                    final String STATUS = read.getString("status");
                                     String IMG = read.getString("image");
-                                    String ROLE = read.getString("role_id");
+                                    final String ROLE = read.getString("role_id");
 
-                                    Log.e(TAG,"sadviewfoster: " + IMG);
+                                    Log.e(TAG,"sadviewfoster: " + NAME);
 
                                     final HashMap<String,String> data = new HashMap<>();
                                     data.put("name",NAME);
@@ -120,20 +139,9 @@ public class ViewFosters extends AppCompatActivity {
                                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                         @Override
                                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                            int index = i;
-                                            //final String[] NAME = {""};
-                                            //final String[] myResponse = new String[1];
+                                            final int index = i;
                                             alertDialog = new AlertDialog.Builder(ViewFosters.this);
                                             view = getLayoutInflater().inflate(R.layout.activity_admin_edit_fosters,null);
-                                            String position = lv.getItemAtPosition(index).toString();
-                                            try {
-                                                jsonUserData = new HashMap<String,String>();
-                                                jsonUserData.put("name",new JSONObject(position).getString("name"));
-                                                jsonUserData.put("status",new JSONObject(position).getString("status"));
-                                                jsonUserData.put("role_id",new JSONObject(position).getString("role_id"));
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
 
                                             AEbtnSubmit = view.findViewById(R.id.popup_admin_edit_foster_btnSubmit);
                                             AEname = view.findViewById(R.id.popup_admin_edit_foster_fname);
@@ -145,49 +153,46 @@ public class ViewFosters extends AppCompatActivity {
                                             AEtxtrole = view.findViewById(R.id.popup_admin_edit_foster_textrole);
                                             Aetxtstatus = view.findViewById(R.id.popup_admin_edit_foster_textstatus);
 
-                                                AEtxtname.setText(jsonUserData.get("name"));
-                                                Aetxtstatus.setText(jsonUserData.get("status"));
-                                                if(jsonUserData.get("role_id") == String.valueOf(1)){
-                                                    AEtxtrole.setText("Admin");
-                                                }else if(jsonUserData.get("role_id")== String.valueOf(2)){
-                                                    AEtxtrole.setText("Foster");
+                                            AEname.setText(arrayList.get(index).put("name",NAME));
+                                            AEtxtrole.setText(arrayList.get(index).put("role_id",ROLE));
+//                                            if(arrayList.get(index).put("role_id",ROLE).equals(1)){
+//                                                AEtxtrole.setText("Admin");
+//                                            }else if(arrayList.get(index).put("role_id",ROLE).equals(2)){
+//                                                AEtxtrole.setText("Foster");
+//                                            }
+                                            Aetxtstatus.setText(arrayList.get(index).put("status",STATUS));
+
+                                            AEbtnSubmit.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View view) {
+                                                    int pos = index + 1;
+//                                                    Gson gson = new GsonBuilder()
+//                                                            .setLenient()
+//                                                            .create();
+                                                    responseService responseService = new responseService(
+                                                            id = pos,
+                                                            name = AEname.getText().toString(),
+                                                            role = AEtxtrole.getText().toString(),
+                                                            status = Aetxtstatus.getText().toString());
+//                                                    name = AEname.getText().toString()
+//                                                    status = Aetxtstatus.getText().toString();
+//                                                    role = AEtxtrole.getText().toString();
+//                                                    id = pos;
+
+//                                                        HashMap<String,String> maps = new HashMap<>();
+////                                                        String map = gson.toJson(maps);
+//                                                        maps.put("name",name);
+////                                                        maps.put("status",status);
+////                                                        maps.put("role_id", role);
+//                                                        GsonBuilder gsonBuilder = new GsonBuilder();
+//                                                        Gson gsonobject = gsonBuilder.create();
+//                                                        gsonobject.toJson(maps);
+
+                                                        Toast.makeText(getBaseContext(),"sad:" ,Toast.LENGTH_SHORT).show();
+                                                        Log.e(TAG,"testing: " +name);
+                                                        update_foster(id,name/*,gson.toJson(maps.get("status")),gson.toJson(maps.get("role_id"))*/);
                                                 }
-                                                AEname.setText(jsonUserData.get("name"));
-                                                   Log.i(TAG,"fail: " + position + " " + " " + jsonUserData.get("name"));
-
-                            //                client.newCall(request).enqueue(new Callback() {
-                            //                    @Override
-                            //                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                            //
-                            //                    }
-                            //
-                            //                    @Override
-                            //                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                            //                        if(response.isSuccessful()){
-                            //                            String myResponse = response.body().toString();
-                            //                            jsonUserData = new HashMap<String,String>();
-                            //                            try {
-                            //                                jsonUserData.put("name",new JSONObject(myResponse).getString("name"));
-                            //                                Intent intent = new Intent(getBaseContext(),ViewFosters.class);
-                            //                                intent.putExtra("name",jsonUserData.get("name"));
-                            //
-                            //
-                            //                            } catch (JSONException e) {
-                            //                                e.printStackTrace();
-                            //                            }
-                            //                        }
-                            //                    }
-                            //                });
-
-
-                            //                AEbtnSubmit.setOnClickListener(new View.OnClickListener() {
-                            //                    @Override
-                            //                    public void onClick(View view) {
-                            //                        Intent intent = getIntent();
-                            //                        String hard = intent.getStringExtra("name");
-                            //                        Toast.makeText(getBaseContext(),"base: " + hard,Toast.LENGTH_SHORT).show();
-                            //                    }
-                            //                });
+                                            });
 
                                             alertDialog.setView(view);
                                             Adialog = alertDialog.create();
@@ -195,6 +200,7 @@ public class ViewFosters extends AppCompatActivity {
                                         }
                                     });
                                     lv.setAdapter(adapter);
+                                    String count = String.valueOf(arrayList.size());
                                 }
 
                             } catch (JSONException e) {
@@ -239,110 +245,6 @@ public class ViewFosters extends AppCompatActivity {
             }
         });
 
-//        try {
-//           jsonParser = (FosterJsonParser) new FosterJsonParser(this,this).execute();
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-
-//        OkHttpClient client = new OkHttpClient().newBuilder().build();
-//        Request request = new Request.Builder()
-//                .url("https://pet-share.com/api/guest/users")
-//                .build();
-//        client.newCall(request).enqueue(new Callback() {
-//            @Override
-//            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-//                e.printStackTrace();
-//            }
-//
-//            @Override
-//            public void onResponse(@NotNull Call call, @NotNull final Response response) throws IOException {
-//                if(response.isSuccessful()){
-//                    final String myResponse = response.body().string();
-//                    try {
-//                        jsonUserData = new HashMap<String, String>();
-//                        Log.i("Test Data", ""+myResponse);
-//                        Toast.makeText(ViewFosters.this,"sad: " + myResponse,Toast.LENGTH_SHORT);
-//                        jsonUserData.put("id", new JSONObject(myResponse).getString("id"));
-//                    } catch (JSONException e) {
-//                        Log.i("Test Data", ""+myResponse);
-//                        e.printStackTrace();
-//                    }
-//                }
-//                ViewFosters.this.runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        Log.i("Test Data", "" + response);
-//                        try {
-//                            Toast.makeText(ViewFosters.this,"sad: " + response.body().string(),Toast.LENGTH_SHORT);
-//                        }catch (IOException e){
-//                            Toast.makeText(ViewFosters.this,"sad: " + e,Toast.LENGTH_SHORT);
-//                        }
-//                    }
-//                });
-//            }
-//        });
-
-//        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(final AdapterView<?> adapterView, View view, int i, long l) {
-//                final int index = i;
-//                final long h = l;
-//                final String[] NAME = {""};
-////                final String[] myResponse = new String[1];
-//                alertDialog = new AlertDialog.Builder(ViewFosters.this);
-//                view = getLayoutInflater().inflate(R.layout.activity_admin_edit_fosters,null);
-//
-//                AEbtnSubmit = view.findViewById(R.id.popup_admin_edit_foster_btnSubmit);
-//                AEname = view.findViewById(R.id.popup_admin_edit_foster_fname);
-//                AEpopemail = view.findViewById(R.id.popup_admin_edit_foster_email);
-//                AEpoppassword = view.findViewById(R.id.popup_admin_edit_foster_password);
-//                AEpopconfirm = view.findViewById(R.id.popup_admin_edit_foster_confirm);
-//                AEtxtname = view.findViewById(R.id.popup_admin_edit_foster_textname);
-//                AEtxtemail = view.findViewById(R.id.popup_admin_edit_foster_textemail);
-//                AEtxtrole = view.findViewById(R.id.popup_admin_edit_foster_textrole);
-//                Aetxtstatus = view.findViewById(R.id.popup_admin_edit_foster_textstatus);
-//
-//
-////                client.newCall(request).enqueue(new Callback() {
-////                    @Override
-////                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-////
-////                    }
-////
-////                    @Override
-////                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-////                        if(response.isSuccessful()){
-////                            String myResponse = response.body().toString();
-////                            jsonUserData = new HashMap<String,String>();
-////                            try {
-////                                jsonUserData.put("name",new JSONObject(myResponse).getString("name"));
-////                                Intent intent = new Intent(getBaseContext(),ViewFosters.class);
-////                                intent.putExtra("name",jsonUserData.get("name"));
-////
-////
-////                            } catch (JSONException e) {
-////                                e.printStackTrace();
-////                            }
-////                        }
-////                    }
-////                });
-//
-//
-////                AEbtnSubmit.setOnClickListener(new View.OnClickListener() {
-////                    @Override
-////                    public void onClick(View view) {
-////                        Intent intent = getIntent();
-////                        String hard = intent.getStringExtra("name");
-////                        Toast.makeText(getBaseContext(),"base: " + hard,Toast.LENGTH_SHORT).show();
-////                    }
-////                });
-//
-//                alertDialog.setView(view.getRootView());
-//                Adialog = alertDialog.create();
-//                Adialog.show();
-//            }
-//        });
         lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -355,13 +257,22 @@ public class ViewFosters extends AppCompatActivity {
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         int id = menuItem.getItemId();
                         if (id == R.id.delete_user) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(ViewFosters.this);
+                            final AlertDialog.Builder builder = new AlertDialog.Builder(ViewFosters.this);
                             builder.setTitle("Delete");
                             builder.setMessage("Are you sure you want to delete this motherfucker?");
                             builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    Toast.makeText(getBaseContext(), "joke lang: " + index, Toast.LENGTH_SHORT).show();
+                                    int pos = index + 1;
+                                    Gson gson = new GsonBuilder().serializeNulls().setLenient().create();
+
+                                    Retrofit retrofit = new Retrofit.Builder()
+                                            .baseUrl("https://pet-share.com")
+                                            .addConverterFactory(GsonConverterFactory.create(gson))
+                                            .build();
+                                    apiUser = retrofit.create(ApiUser.class);
+                                    delete_foster(pos);
+                                    builder.setMessage("Successfully Deleted!");
                                 }
                             });
                             builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -421,7 +332,6 @@ public class ViewFosters extends AppCompatActivity {
                         showDialog("Loading..");
                         showToast("Successful");
 
-
                     } else {
                         try {
                             showToast("An error ocured\nPlease try again later." + response.errorBody().string());
@@ -431,8 +341,6 @@ public class ViewFosters extends AppCompatActivity {
                             e.printStackTrace();
                             showToast(e.getMessage());
                         }
-
-
                     }
                 }
 
@@ -463,7 +371,80 @@ public class ViewFosters extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show();
     }
 
-    public void delete_foster(String DEL){
+    public void delete_foster(int id){
 
+        retrofit2.Call<Void> call = apiUser.deleteUser(id);
+        call.enqueue(new retrofit2.Callback<Void>() {
+            @Override
+            public void onResponse(retrofit2.Call<Void> call, retrofit2.Response<Void> response) {
+                if(response.isSuccessful()){
+                    Log.e(TAG,"Success: " + response.message());
+                }
+                else {
+                    Log.e(TAG,"onResponse: " + response.raw());
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<Void> call, Throwable t) {
+                Log.e(TAG,"onFailure: " + t.getMessage());
+            }
+        });
     }
+
+    public void update_foster(final int id, String name/*String status,String role, String email, String password,String confirm*/){
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .serializeNulls()
+                .create();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://pet-share.com")
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+        ApiUser apiUser = retrofit.create(ApiUser.class);
+        retrofit2.Call<responseService> call = apiUser.updateUser(id,name);
+        call.enqueue(new retrofit2.Callback<responseService>() {
+            @Override
+            public void onResponse(retrofit2.Call<responseService> call, retrofit2.Response<responseService> response) {
+                if(response.isSuccessful()){
+                    Log.e(TAG,"success: " + response);
+                }else {
+                    Log.e(TAG,"else: " + response.message());
+                }
+
+                int id = response.body().getId();
+                String name = response.body().getName();
+                Log.e(TAG,"onResp: " + id + " " + name);
+
+
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<responseService> call, Throwable t) {
+                String mess = t.getMessage();
+                Log.e(TAG,"fail: " + mess);
+            }
+        });
+//        ApiUser apiUser = Constant.getRetroFit().create(ApiUser.class);
+//        //services services = Constant.getRetroFit().create(com.example.petshare.services.class);
+//        retrofit2.Call<responseService> call = apiUser.updateUser(id,name/*gson.toJson(role),gson.toJson(status)email,password,confirm*/);
+//
+//        call.enqueue(new retrofit2.Callback<responseService>() {
+//            @Override
+//            public void onResponse(retrofit2.Call<responseService> call, retrofit2.Response<responseService> response) {
+//                if(response.isSuccessful() && response.body() != null){
+//                    Log.e(TAG,"success: " + response);
+//                }else {
+//                    Log.e(TAG,"else: " + response.message());
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(retrofit2.Call<responseService> call, Throwable t) {
+//                String mess = t.getMessage();
+//                Log.e(TAG,"fail: " + mess);
+//            }
+//        });
+    }
+
 }

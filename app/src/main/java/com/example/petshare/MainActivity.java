@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                        Log.i("Test Data", ""+myResponse);
+                        Log.e("Test Data", ""+myResponse);
 
 
                     } catch (JSONException e) {

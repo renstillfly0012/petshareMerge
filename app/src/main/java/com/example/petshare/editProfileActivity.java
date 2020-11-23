@@ -113,13 +113,7 @@ public class editProfileActivity extends AppCompatActivity implements Navigation
             case R.id.nav_home:
 
                 break;
-            case R.id.nav_adopt:
-                intent = new Intent(this, howToAdopt.class);
-                startActivity(intent);
-                break;
             case R.id.nav_report:
-                break;
-            case R.id.nav_donate:
                 break;
             case R.id.nav_view_fosters:
                 intent = new Intent(this, viewProfileActivity.class);

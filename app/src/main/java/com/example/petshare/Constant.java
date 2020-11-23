@@ -14,7 +14,8 @@ public class Constant {
     public static final String  HOME = URL+"/api";
     public static final String  LOGIN = HOME+"/guest/login";
     public static final String  REGISTER = HOME+"/guest/register/";
-
+    private static Constant mInstance;
+    public Retrofit retrofits;
 
     public static Retrofit getRetroFit(){
 
@@ -32,15 +33,44 @@ public class Constant {
                 .baseUrl(URL)
                 .client(okHttpClient)
                 .build();
-
         return retrofit;
 
     }
 
-    public  static  ApiUser getService(){
-        ApiUser getservice = getRetroFit().create(ApiUser.class);
+    public static Retrofit getRetroFit1(){
 
-        return getservice;
+        HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
+        httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        OkHttpClient okHttpClient = new OkHttpClient.Builder().addInterceptor(httpLoggingInterceptor).build();
+
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl("https://pet-share.com/api/admin/edit-user/")
+                .client(okHttpClient)
+                .build();
+        return retrofit;
+
+    }
+
+    public static synchronized Constant getInstance(){
+        if(mInstance == null){
+            mInstance = new Constant();
+        }
+        return mInstance;
+    }
+
+    public  static  ApiUser getService(){
+
+        return getRetroFit().create(ApiUser.class);
+    }
+
+    public ApiUser getApiUser(){
+        return retrofits.create(ApiUser.class);
     }
 
 }

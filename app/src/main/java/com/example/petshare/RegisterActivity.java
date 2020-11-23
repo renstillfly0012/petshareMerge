@@ -82,7 +82,6 @@ public class RegisterActivity extends AppCompatActivity {
         data.setEmail(email);
         data.setPassword(password);
         data.setConfirm(confirm);
-
         return data;
     }
 

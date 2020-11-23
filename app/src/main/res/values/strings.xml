@@ -8,4 +8,6 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="open_qr_scanner"><u>Open QR Scanner</u></string>
+    <string name="show_pet_health_status"><u>Show Pet Health Status</u></string>
+    <string name="dashboard">Dashboard</string>
 </resources>
