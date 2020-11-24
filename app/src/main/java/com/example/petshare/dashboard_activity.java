@@ -39,18 +39,20 @@ import java.util.HashMap;
 
 public class dashboard_activity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+
+    private String TAG = "dashboard";
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
     ArrayList<HashMap<String,String>> arrayList;
     TextView txtUser,txtRole,usercount,petcount,donationcount,reportcount;
     ImageView imgUserImg;
-    Log log;
     String id,name,role_id,image,status,imgUrl;
     private Intent intent;
     private SharedPreferences sharedPreferences;
     ViewFosters viewFosters;
-    String Ucount,Pcount;
+    String Ucount,Pcount,Rcount,Dcount;
+    double Sum,Add;
 
 
     @SuppressLint("WrongViewCast")
@@ -124,6 +126,72 @@ public class dashboard_activity extends AppCompatActivity implements NavigationV
                                 JSONArray pets = new JSONArray(myResponse);
                                 Pcount = String.valueOf(pets.length());
                                 petcount.setText(Pcount);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+        request = new Request.Builder()
+                .url(Url.reporturl)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if(response.isSuccessful()){
+                    final String myResponse = response.body().string();
+                    dashboard_activity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                JSONObject jsonObject = new JSONObject(myResponse);
+                                JSONArray reports = jsonObject.getJSONArray("data");
+                                Rcount = String.valueOf(reports.length());
+                                reportcount.setText(Rcount);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+        request = new Request.Builder()
+                .url(Url.donationurl)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if(response.isSuccessful()){
+                    final String myResponse = response.body().string();
+                    dashboard_activity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                JSONObject jsonObject = new JSONObject(myResponse);
+                                JSONArray donation = jsonObject.getJSONArray("data");
+                                for(int i = 0; i < donation.length(); i++){
+                                    JSONObject read = donation.getJSONObject(i);
+                                     Sum += Double.parseDouble(read.getString("donation_amount"));
+                                }
+
+                                double res = Sum;
+                                donationcount.setText(res + " PHP");
+                                Log.e(TAG,"res: " + res);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -206,6 +274,10 @@ public class dashboard_activity extends AppCompatActivity implements NavigationV
 
         switch(menuItem.getItemId()){
             case R.id.nav_home:
+                break;
+            case R.id.nav_donation:
+                intent = new Intent(this,ViewDonations.class);
+                startActivity(intent);
                 break;
             case R.id.nav_view_pet:
                 intent = new Intent(this,ViewPets.class);

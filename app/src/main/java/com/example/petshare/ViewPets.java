@@ -254,6 +254,10 @@ public class ViewPets extends AppCompatActivity implements NavigationView.OnNavi
                 intent = new Intent(this, dashboard_activity.class);
                 startActivity(intent);
                 break;
+            case R.id.nav_donation:
+                intent = new Intent(this,ViewDonations.class);
+                startActivity(intent);
+                break;
             case R.id.nav_view_pet:
                 intent = new Intent(this,ViewPets.class);
                 startActivity(intent);

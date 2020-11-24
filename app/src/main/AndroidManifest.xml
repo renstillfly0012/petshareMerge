@@ -11,7 +11,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ViewReports"></activity>
+        <activity android:name=".AdminEditDonations"></activity>
+        <activity android:name=".AdminEditReports" />
+        <activity android:name=".ViewDonations" />
+        <activity android:name=".ViewReports" />
         <activity android:name=".AdminEditPets" />
         <activity android:name=".ViewPets" />
         <activity android:name=".AdminEditFosters" />
@@ -40,9 +43,9 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
     </application>
-    <uses-feature android:name="android.hardware.camera.autofocus" />
-
     <uses-feature android:name="android.hardware.camera" />
+
+    <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
 

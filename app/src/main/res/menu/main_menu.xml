@@ -23,6 +23,21 @@
                 </group>
             </menu>
         </item>
+    <item
+        android:title="Donation">
+        <menu>
+            <group
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_donation"
+                    android:title="View Donations"
+                    android:icon="@drawable/donation_icon_foreground">
+
+                </item>
+            </group>
+        </menu>
+
+    </item>
 
 
         <item
