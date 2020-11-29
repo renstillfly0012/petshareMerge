@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ViewDonations"
+    tools:context=".ViewPetHealth"
     android:fitsSystemWindows="true"
     tools:openDrawer="start"
-    android:id="@+id/view_donation_drawer_layout">
+    android:id="@+id/view_health_drawer_layout">
 
     <com.google.android.material.navigation.NavigationView
-        android:id="@+id/view_donation_nav_view"
+        android:id="@+id/view_health_nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         app:headerLayout="@layout/header"
@@ -26,7 +26,7 @@
         android:layout_height="match_parent">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/view_donation_toolbar"
+            android:id="@+id/view_health_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorGreen"
@@ -40,46 +40,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Manage Donations"
+                android:text="Manage Pet Health"
                 android:textColor="@color/colorYellow" />
 
         </androidx.appcompat.widget.Toolbar>
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
 
-    <ListView
-        android:id="@+id/listviewdonation"
-        android:layout_width="match_parent"
-        android:layout_height="602dp"
-        android:layout_marginTop="57dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:paddingBottom="4dp"
-        android:cacheColorHint="@color/colorGreen"/>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <ListView
+            android:id="@+id/listviewhealth"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/total_donation_page"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="33dp"
-                android:layout_marginEnd="25dp"
-                android:layout_marginTop="662dp"
-                android:text="total here"
-                android:textColor="@color/colorGreen"
-                android:textSize="40sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_height="match_parent"
+            android:layout_marginTop="50dp"
+            />
 
 
     </RelativeLayout>

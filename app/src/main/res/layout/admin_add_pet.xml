@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorGreen"
+    tools:context=".MainActivity">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
+
+    <ImageView
+        android:id="@+id/pet_profile_pic"
+        android:layout_width="160dp"
+        android:layout_height="140dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/colorWhite"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.065"
+        app:srcCompat="@drawable/attach_image" />
+
+    <EditText
+        android:id="@+id/pop_pet_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/rectangle_2"
+        android:ems="10"
+        android:gravity="center|center_horizontal"
+        android:hint="Name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pet_profile_pic" />
+
+    <EditText
+        android:id="@+id/pop_pet_age"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="9dp"
+        android:background="@drawable/rectangle_2"
+        android:ems="10"
+        android:gravity="center|center_horizontal"
+        android:hint="Age"
+        app:layout_constraintEnd_toEndOf="@+id/pop_pet_name"
+        app:layout_constraintStart_toStartOf="@+id/pop_fname"
+        app:layout_constraintTop_toBottomOf="@+id/pop_pet_name" />
+
+    <EditText
+        android:id="@+id/pop_pet_breed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="9dp"
+        android:background="@drawable/rectangle_2"
+        android:ems="10"
+        android:gravity="center|center_horizontal"
+        android:hint="Breed"
+        app:layout_constraintEnd_toEndOf="@+id/pop_pet_age"
+        app:layout_constraintStart_toStartOf="@+id/pop_pet_age"
+        app:layout_constraintTop_toBottomOf="@+id/pop_pet_age" />
+
+    <EditText
+        android:id="@+id/pop_pet_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="9dp"
+        android:background="@drawable/rectangle_2"
+        android:ems="10"
+        android:gravity="center|center_horizontal"
+        android:hint="Status"
+        app:layout_constraintEnd_toEndOf="@+id/pop_pet_breed"
+        app:layout_constraintStart_toStartOf="@+id/pop_password"
+        app:layout_constraintTop_toBottomOf="@+id/pop_pet_breed" />
+
+    <EditText
+        android:id="@+id/pop_pet_description"
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="56dp"
+        android:layout_marginStart="55dp"
+        android:layout_marginTop="13dp"
+        android:bufferType="spannable"
+        android:gravity="top"
+        android:hint="Description"
+        android:background="@color/colorWhite"
+        android:inputType="textCapSentences|textMultiLine"
+        android:minHeight="120dp"
+        android:overScrollMode="ifContentScrolls"
+        android:scrollbarStyle="insideInset"
+        android:scrollbars="vertical"
+        android:selectAllOnFocus="true"
+        android:textIsSelectable="true"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pop_pet_status"
+        />
+
+
+    <Button
+        android:id="@+id/btnSubmitPopPet"
+        android:layout_width="101dp"
+        android:layout_height="58dp"
+        android:layout_marginEnd="95dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="27dp"
+        android:background="@drawable/cancel1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnCancelPopPet"
+        app:layout_constraintTop_toBottomOf="@+id/pop_pet_description" />
+
+    <Button
+        android:id="@+id/btnCancelPopPet"
+        android:layout_width="101dp"
+        android:layout_height="58dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginStart="95dp"
+        android:layout_marginTop="27dp"
+        android:background="@drawable/login1"
+        app:layout_constraintEnd_toStartOf="@+id/btnSubmitPopPet"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pop_pet_description" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

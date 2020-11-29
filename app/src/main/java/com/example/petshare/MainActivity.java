@@ -110,93 +110,97 @@ public class MainActivity extends AppCompatActivity {
 
     public void login() throws IOException {
 
-        dialog = new ProgressDialog(this);
-        dialog.setCancelable(false);
-        dialog.setMessage("Processing");
-        dialog.show();
 
         email = Email.getText().toString().trim();
         password = Password.getText().toString().trim();
+        if(email.isEmpty()){
+            Email.setError("Empty Field");
+        }else if(password.isEmpty()){
+            Password.setError("Empty Field");
+        }
+        else {
+            dialog = new ProgressDialog(this);
+            dialog.setCancelable(false);
+            dialog.setMessage("Processing");
+            dialog.show();
+        }
 
-        OkHttpClient client = new OkHttpClient().newBuilder().build();
+            OkHttpClient client = new OkHttpClient().newBuilder().build();
 
-        final Request request = new Request.Builder()
-                .url("http://pet-share.com/api/guest/login?email=" + email + "&password=" + password)
+            final Request request = new Request.Builder()
+                    .url("http://pet-share.com/api/guest/login?email=" + email + "&password=" + password)
 //                .url("http://pet-share.com/api/guest/users/")
-                .method("GET", null)
-                .build();
+                    .method("GET", null)
+                    .build();
 
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace();
-            }
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    e.printStackTrace();
+                }
 
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    final String myResponse = response.body().string();
-                    try {
-                        //get jsondata
-                        jsonUserData = new HashMap<String, String>();
-                        jsonUserData.put("id", new JSONObject(myResponse).getString("id"));
-                        jsonUserData.put("name", new JSONObject(myResponse).getString("name"));
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if (response.isSuccessful()) {
+                        final String myResponse = response.body().string();
+                        try {
+                            //get jsondata
+                            jsonUserData = new HashMap<String, String>();
+                            jsonUserData.put("id", new JSONObject(myResponse).getString("id"));
+                            jsonUserData.put("name", new JSONObject(myResponse).getString("name"));
 //                        jsonUserData.put("email", new JSONObject(myResponse).getString("email"));
 //                        jsonUserData.put("email_verified_at", new JSONObject(myResponse).getString("email_verified_at"));
 //                        jsonUserData.put("password", new JSONObject(myResponse).getString("password"));
-                        jsonUserData.put("role_id", new JSONObject(myResponse).getString("role_id"));
-                        jsonUserData.put("image", new JSONObject(myResponse).getString("image"));
-                        jsonUserData.put("status", new JSONObject(myResponse).getString("status"));
+                            jsonUserData.put("role_id", new JSONObject(myResponse).getString("role_id"));
+                            jsonUserData.put("image", new JSONObject(myResponse).getString("image"));
+                            jsonUserData.put("status", new JSONObject(myResponse).getString("status"));
 
 
+                            Log.e("Test Data", "" + myResponse);
 
 
-                        Log.e("Test Data", ""+myResponse);
-
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-
-                    MainActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-//                          lblEmail.setText(jsonUserData.get("name"));
-                            dialog.dismiss();
-
-                            Toast.makeText(getBaseContext(), "Welcome "+email +"\n You have Successfully Login ", LENGTH_LONG).show();
-                            intent  = new Intent(getBaseContext(), dashboard_activity.class);
-                            intent.putExtra("KEY_ID_INT", jsonUserData.get("id"));
-                            intent.putExtra("KEY_NAME_INT", jsonUserData.get("name"));
-                            intent.putExtra("KEY_ROLE_ID_INT", jsonUserData.get("role_id"));
-                            intent.putExtra("KEY_IMAGE_INT", jsonUserData.get("image"));
-                            intent.putExtra("KEY_STATUS_INT", jsonUserData.get("status"));
-                            intent.putExtra("KEY_EMAIL_INT",email);
-
-                            sharedPreferences = getSharedPreferences("KEY_USER_INFO",MODE_PRIVATE);
-
-                            String checkSP = sharedPreferences.getString("KEY_NAME", null);
-
-                            if(checkSP == null){
-                                //put data on shared preferences
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString("KEY_ID", jsonUserData.get("id"));
-                                editor.putString("KEY_NAME", jsonUserData.get("name"));
-                                editor.putString("KEY_ROLE_ID", jsonUserData.get("role_id"));
-                                editor.putString("KEY_IMAGE", jsonUserData.get("image"));
-                                editor.putString("KEY_STATUS", jsonUserData.get("status"));
-                                editor.apply();
-                            }
-
-                            startActivity(intent);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    });
 
+
+                        MainActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+//                          lblEmail.setText(jsonUserData.get("name"));
+                                dialog.dismiss();
+
+                                Toast.makeText(getBaseContext(), "Welcome " + email + "\n You have Successfully Login ", LENGTH_LONG).show();
+                                intent = new Intent(getBaseContext(), dashboard_activity.class);
+                                intent.putExtra("KEY_ID_INT", jsonUserData.get("id"));
+                                intent.putExtra("KEY_NAME_INT", jsonUserData.get("name"));
+                                intent.putExtra("KEY_ROLE_ID_INT", jsonUserData.get("role_id"));
+                                intent.putExtra("KEY_IMAGE_INT", jsonUserData.get("image"));
+                                intent.putExtra("KEY_STATUS_INT", jsonUserData.get("status"));
+                                intent.putExtra("KEY_EMAIL_INT", email);
+
+                                sharedPreferences = getSharedPreferences("KEY_USER_INFO", MODE_PRIVATE);
+
+                                String checkSP = sharedPreferences.getString("KEY_NAME", null);
+
+                                if (checkSP == null) {
+                                    //put data on shared preferences
+                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                    editor.putString("KEY_ID", jsonUserData.get("id"));
+                                    editor.putString("KEY_NAME", jsonUserData.get("name"));
+                                    editor.putString("KEY_ROLE_ID", jsonUserData.get("role_id"));
+                                    editor.putString("KEY_IMAGE", jsonUserData.get("image"));
+                                    editor.putString("KEY_STATUS", jsonUserData.get("status"));
+                                    editor.apply();
+                                }
+
+                                startActivity(intent);
+                            }
+                        });
+
+                    }
                 }
-            }
-        });
-
+            });
 
     }
 }

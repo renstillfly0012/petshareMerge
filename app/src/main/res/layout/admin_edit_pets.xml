@@ -10,21 +10,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/popup_admin_edit_pet_image"
-        android:layout_width="146dp"
-        android:layout_height="164dp"
-        android:layout_marginEnd="224dp"
-        android:layout_marginStart="41dp"
-        android:layout_marginTop="15dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.061"
-        app:srcCompat="@drawable/logo" />
+        <ImageView
+            android:id="@+id/popup_admin_edit_pet_image"
+            android:layout_width="146dp"
+            android:layout_height="164dp"
+            android:layout_marginStart="33dp"
+            android:layout_marginTop="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.066"
+            app:srcCompat="@drawable/logo" />
 
-    <EditText
+        <EditText
         android:id="@+id/popup_admin_edit_pet_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -113,29 +111,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/popup_admin_edit_pet_desc" />
 
-    <TextView
-        android:id="@+id/popup_admin_pet_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="84dp"
-        android:text="Status here"
-        android:textColor="@color/colorBlack"
-        android:textSize="13sp"
-        app:layout_constraintStart_toEndOf="@+id/popup_admin_edit_pet_image"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/popup_admin_pet_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="124dp"
+            android:text="Status here"
+            android:textColor="@color/colorGreen"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@+id/popup_admin_edit_pet_image"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/popup_admin_edit_pet_qr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="22dp"
-        android:text="@string/show_pet_health_status"
-        android:textColor="@color/colorGreen"
-        android:textSize="14sp"
-        app:layout_constraintStart_toEndOf="@+id/popup_admin_edit_pet_image"
-        app:layout_constraintTop_toBottomOf="@+id/popup_admin_pet_status" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

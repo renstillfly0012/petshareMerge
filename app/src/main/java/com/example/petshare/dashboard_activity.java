@@ -7,6 +7,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -70,10 +71,21 @@ public class dashboard_activity extends AppCompatActivity implements NavigationV
         reportcount = findViewById(R.id.report_count);
         arrayList = new ArrayList<>();
 
+        sharedPreferences = getSharedPreferences("KEY_USER_INFO", MODE_PRIVATE);
+        id = sharedPreferences.getString("KEY_ID", null);
+        name = sharedPreferences.getString("KEY_NAME", null);
+        role_id = sharedPreferences.getString("KEY_ROLE_ID", null);
+        image = sharedPreferences.getString("KEY_IMAGE", null);
+        status = sharedPreferences.getString("KEY_STATUS", null);
 
         final OkHttpClient client = new OkHttpClient();
         final String url = Url.fosterurl;
         final String purl = Url.peturl;
+
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading PetShare Data....");
+        progressDialog.show();
+
 
         Request request = new Request.Builder()
                 .url(url)
@@ -83,11 +95,13 @@ public class dashboard_activity extends AppCompatActivity implements NavigationV
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
+                progressDialog.dismiss();
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if(response.isSuccessful()){
+                    progressDialog.dismiss();
                     final String myResponse = response.body().string();
                     dashboard_activity.this.runOnUiThread(new Runnable() {
                         @Override
@@ -112,12 +126,14 @@ public class dashboard_activity extends AppCompatActivity implements NavigationV
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                progressDialog.dismiss();
                 e.printStackTrace();
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if(response.isSuccessful()) {
+                    progressDialog.dismiss();
                     final String myResponse = response.body().string();
                     dashboard_activity.this.runOnUiThread(new Runnable() {
                         @Override
@@ -141,12 +157,14 @@ public class dashboard_activity extends AppCompatActivity implements NavigationV
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                progressDialog.dismiss();
                 e.printStackTrace();
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if(response.isSuccessful()){
+                    progressDialog.dismiss();
                     final String myResponse = response.body().string();
                     dashboard_activity.this.runOnUiThread(new Runnable() {
                         @Override
@@ -171,12 +189,14 @@ public class dashboard_activity extends AppCompatActivity implements NavigationV
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                progressDialog.dismiss();
                 e.printStackTrace();
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if(response.isSuccessful()){
+                    progressDialog.dismiss();
                     final String myResponse = response.body().string();
                     dashboard_activity.this.runOnUiThread(new Runnable() {
                         @Override
@@ -281,6 +301,10 @@ public class dashboard_activity extends AppCompatActivity implements NavigationV
                 break;
             case R.id.nav_view_pet:
                 intent = new Intent(this,ViewPets.class);
+                startActivity(intent);
+                break;
+            case R.id.nav_view_pethealth:
+                intent = new Intent(this,ViewPetHealth.class);
                 startActivity(intent);
                 break;
             case R.id.nav_view_fosters:

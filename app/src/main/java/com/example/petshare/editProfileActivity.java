@@ -111,16 +111,48 @@ public class editProfileActivity extends AppCompatActivity implements Navigation
 
         switch(menuItem.getItemId()){
             case R.id.nav_home:
-
+                intent = new Intent(this, dashboard_activity.class);
+                startActivity(intent);
                 break;
-            case R.id.nav_report:
+            case R.id.nav_donation:
+                intent = new Intent(this,ViewDonations.class);
+                startActivity(intent);
+                break;
+            case R.id.nav_view_pet:
+                intent = new Intent(this,ViewPets.class);
+                startActivity(intent);
+                break;
+            case R.id.nav_view_pethealth:
+                intent = new Intent(this,ViewPetHealth.class);
+                startActivity(intent);
                 break;
             case R.id.nav_view_fosters:
-                intent = new Intent(this, viewProfileActivity.class);
+                intent = new Intent(this, ViewFosters.class);
                 startActivity(intent);
                 break;
             case R.id.nav_edit:
+                intent = getIntent();
+                String ID = intent.getStringExtra("KEY_ID_INT");
+                String NAME = intent.getStringExtra("KEY_NAME_INT");
+                String ROLE_ID = intent.getStringExtra("KEY_ROLE_ID");
+
+                String IMAGE = intent.getStringExtra("KEY_IMAGE_INT");
+                String STATUS = intent.getStringExtra("KEY_STATUS_INT");
+                String EMAIL = intent.getStringExtra("KEY_EMAIL_INT");
                 intent = new Intent(this, editProfileActivity.class);
+                Toast.makeText(editProfileActivity.this,"profile to: " + EMAIL,Toast.LENGTH_SHORT).show();
+                intent.putExtra("KEY_NAME_INT",NAME);
+                intent.putExtra("KEY_IMAGE_INT",IMAGE);
+                intent.putExtra("KEY_EMAIL_INT",EMAIL);
+                intent.putExtra("KEY_NAME_INT",NAME);
+                startActivity(intent);
+                break;
+            case R.id.nav_report:
+                intent = new Intent(getBaseContext(),ViewReports.class);
+                startActivity(intent);
+                break;
+            case R.id.nav_admin_qr_scanner:
+                intent = new Intent(getBaseContext(),AdminQRCodeScanner.class);
                 startActivity(intent);
                 break;
             case R.id.nav_logout:
@@ -131,6 +163,7 @@ public class editProfileActivity extends AppCompatActivity implements Navigation
                 Toast.makeText(getBaseContext(), "Log out Successfully", Toast.LENGTH_SHORT).show();
                 startActivity(intent);
                 finish();
+
 
         }
 

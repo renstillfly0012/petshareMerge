@@ -20,6 +20,12 @@
                         android:icon="@drawable/pet_icon_foreground">
 
                     </item>
+                    <item
+                        android:id="@+id/nav_view_pethealth"
+                        android:title="Pet Health Records"
+                        android:icon="@drawable/health_icon_foreground">
+
+                    </item>
                 </group>
             </menu>
         </item>

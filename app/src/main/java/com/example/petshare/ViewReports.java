@@ -13,6 +13,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -55,6 +56,8 @@ public class ViewReports extends AppCompatActivity implements NavigationView.OnN
     ArrayList<HashMap<String,String>> arrayList;
     ListView lv;
 
+    ImageView reportImage;
+    TextView reportDesc;
     AlertDialog.Builder alertbuilder;
     AlertDialog adialog;
 
@@ -99,6 +102,10 @@ public class ViewReports extends AppCompatActivity implements NavigationView.OnN
         txtUser.setText(name);
         setRole(getRole(role_id));
 
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading Reports....");
+        progressDialog.show();
+
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(Url.reporturl)
@@ -106,11 +113,13 @@ public class ViewReports extends AppCompatActivity implements NavigationView.OnN
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                progressDialog.dismiss();
                 e.printStackTrace();
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                progressDialog.dismiss();
                 if(response.isSuccessful()){
                     final String myResponse = response.body().string();
                     ViewReports.this.runOnUiThread(new Runnable() {
@@ -123,8 +132,8 @@ public class ViewReports extends AppCompatActivity implements NavigationView.OnN
                                     JSONObject readreport = jsonArray.getJSONObject(i);
                                     String ID = readreport.getString("id");
                                     String USERID = readreport.getString("user_id");
-                                    String IMAGE = readreport.getString("image");
-                                    String DESC = readreport.getString("description");
+                                    final String IMAGE = readreport.getString("image");
+                                    final String DESC = readreport.getString("description");
                                     String STATUS = readreport.getString("report_status");
 
                                     HashMap<String,String> hash = new HashMap<>();
@@ -140,8 +149,16 @@ public class ViewReports extends AppCompatActivity implements NavigationView.OnN
                                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                         @Override
                                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                            final int index = i;
                                             alertbuilder = new AlertDialog.Builder(ViewReports.this);
                                             view = getLayoutInflater().inflate(R.layout.activity_admin_edit_reports,null);
+                                            String urlreport = "https://pet-share.com/assets/images/reports/" + arrayList.get(index).put("image",IMAGE);
+                                            reportImage = view.findViewById(R.id.report_image);
+                                            reportDesc = view.findViewById(R.id.report_description);
+
+                                            reportDesc.setText(DESC);
+                                            Glide.with(ViewReports.this).load(urlreport).into(reportImage);
+
                                             alertbuilder.setView(view);
                                             adialog = alertbuilder.create();
                                             adialog.show();
@@ -241,6 +258,10 @@ public class ViewReports extends AppCompatActivity implements NavigationView.OnN
                 break;
             case R.id.nav_view_pet:
                 intent = new Intent(this,ViewPets.class);
+                startActivity(intent);
+                break;
+            case R.id.nav_view_pethealth:
+                intent = new Intent(this,ViewPetHealth.class);
                 startActivity(intent);
                 break;
             case R.id.nav_view_fosters:

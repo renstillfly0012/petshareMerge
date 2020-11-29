@@ -15,7 +15,7 @@ public class Constant {
     public static final String  LOGIN = HOME+"/guest/login";
     public static final String  REGISTER = HOME+"/guest/register/";
     private static Constant mInstance;
-    public Retrofit retrofits;
+    private static Retrofit retrofit;
 
     public static Retrofit getRetroFit(){
 
@@ -26,31 +26,12 @@ public class Constant {
 
         Gson gson = new GsonBuilder()
                 .setLenient()
+                .serializeNulls()
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .baseUrl(URL)
-                .client(okHttpClient)
-                .build();
-        return retrofit;
-
-    }
-
-    public static Retrofit getRetroFit1(){
-
-        HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
-        httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-        OkHttpClient okHttpClient = new OkHttpClient.Builder().addInterceptor(httpLoggingInterceptor).build();
-
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .create();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("https://pet-share.com/api/admin/edit-user/")
                 .client(okHttpClient)
                 .build();
         return retrofit;
@@ -69,8 +50,27 @@ public class Constant {
         return getRetroFit().create(ApiUser.class);
     }
 
-    public ApiUser getApiUser(){
-        return retrofits.create(ApiUser.class);
+    public  static  ApiPets getServicePets(){
+
+        return getRetroFit().create(ApiPets.class);
     }
 
+    static Retrofit getApiClient(){
+
+        if (retrofit==null){
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+        }
+        return retrofit;
+    }
+
+    public ApiUser getApiUser(){
+        return retrofit.create(ApiUser.class);
+    }
+
+
 }
+

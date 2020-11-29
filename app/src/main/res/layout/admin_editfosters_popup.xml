@@ -28,8 +28,8 @@
         android:background="@drawable/rectangle_2"
         android:ems="10"
         android:gravity="center|center_horizontal"
-        android:hint="Juan Dela Cruz"
-        android:inputType="text"
+        android:hint=""
+        android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.533"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,7 +43,7 @@
         android:background="@drawable/rectangle_2"
         android:ems="10"
         android:gravity="center|center_horizontal"
-        android:hint="JuanDelaCruz@gmail.com"
+        android:hint="Email"
         android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="@+id/popup_admin_edit_foster_fname"
         app:layout_constraintStart_toStartOf="@+id/pop_fname"
@@ -57,7 +57,7 @@
         android:background="@drawable/rectangle_2"
         android:ems="10"
         android:gravity="center|center_horizontal"
-        android:hint="**********"
+        android:hint="Password"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="@+id/popup_admin_edit_foster_email"
         app:layout_constraintStart_toStartOf="@+id/pop_email"
@@ -71,7 +71,7 @@
         android:background="@drawable/rectangle_2"
         android:ems="10"
         android:gravity="center|center_horizontal"
-        android:hint="**********"
+        android:hint="Confirm Password"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="@+id/popup_admin_edit_foster_password"
         app:layout_constraintStart_toStartOf="@+id/popup_admin_edit_foster_password"
@@ -101,31 +101,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/popup_admin_edit_foster_confirm" />
 
-    <TextView
-        android:id="@+id/popup_admin_edit_foster_textname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="78dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="70dp"
-        android:text="Name here"
-        android:textColor="@color/colorBlack"
-        app:layout_constraintBottom_toTopOf="@+id/popup_admin_edit_foster_textemail"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/popup_admin_edit_foster_image"
-        app:layout_constraintTop_toTopOf="parent" />
+<!--    <TextView-->
+<!--        android:id="@+id/popup_admin_edit_foster_textname"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginEnd="78dp"-->
+<!--        android:layout_marginStart="24dp"-->
+<!--        android:layout_marginTop="70dp"-->
+<!--        android:text="Name here"-->
+<!--        android:textColor="@color/colorBlack"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/popup_admin_edit_foster_textemail"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.0"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/popup_admin_edit_foster_image"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
-    <TextView
-        android:id="@+id/popup_admin_edit_foster_textemail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:text="Email here"
-        android:textColor="@color/colorBlack"
-        app:layout_constraintBottom_toTopOf="@+id/popup_admin_edit_foster_textrole"
-        app:layout_constraintStart_toEndOf="@+id/popup_admin_edit_foster_image"
-        app:layout_constraintTop_toBottomOf="@+id/popup_admin_edit_foster_textname" />
+<!--    <TextView-->
+<!--        android:id="@+id/popup_admin_edit_foster_textemail"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="24dp"-->
+<!--        android:text="Email here"-->
+<!--        android:textColor="@color/colorBlack"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/popup_admin_edit_foster_textrole"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/popup_admin_edit_foster_image"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/popup_admin_edit_foster_textname" />-->
 
     <TextView
         android:id="@+id/popup_admin_edit_foster_textrole"
@@ -133,10 +133,12 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:layout_marginStart="24dp"
+        android:layout_marginTop="70dp"
         android:text="Role here"
         app:layout_constraintBottom_toTopOf="@+id/popup_admin_edit_foster_textstatus"
         app:layout_constraintStart_toEndOf="@+id/popup_admin_edit_foster_image"
-        app:layout_constraintTop_toBottomOf="@+id/popup_admin_edit_foster_textemail" />
+        app:layout_constraintTop_toTopOf="parent" />
+        <!--app:layout_constraintTop_toBottomOf="@+id/popup_admin_edit_foster_textemail" />-->
 
     <TextView
         android:id="@+id/popup_admin_edit_foster_textstatus"

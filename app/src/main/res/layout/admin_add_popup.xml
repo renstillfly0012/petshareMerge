@@ -9,7 +9,7 @@
     tools:context=".MainActivity">
 
     <ImageView
-        android:id="@+id/Logo"
+        android:id="@+id/foster_profile_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
@@ -29,10 +29,10 @@
         android:ems="10"
         android:gravity="center|center_horizontal"
         android:hint="Juan Dela Cruz"
-        android:inputType="text"
+        android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Logo" />
+        app:layout_constraintTop_toBottomOf="@+id/foster_profile_image" />
 
     <EditText
         android:id="@+id/pop_email"
@@ -42,7 +42,7 @@
         android:background="@drawable/rectangle_2"
         android:ems="10"
         android:gravity="center|center_horizontal"
-        android:hint="JuanDelaCruz@gmail.com"
+        android:hint="Email"
         android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="@+id/reg_txtFname"
         app:layout_constraintStart_toStartOf="@+id/pop_fname"

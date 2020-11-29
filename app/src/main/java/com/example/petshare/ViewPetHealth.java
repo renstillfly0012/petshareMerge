@@ -2,6 +2,7 @@ package com.example.petshare;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -13,12 +14,19 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -27,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.ViewTarget;
 import com.google.android.material.navigation.NavigationView;
 
 import org.jetbrains.annotations.NotNull;
@@ -35,10 +44,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ViewDonations extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class ViewPetHealth extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -47,24 +57,32 @@ public class ViewDonations extends AppCompatActivity implements NavigationView.O
     ArrayList<HashMap<String,String>> arrayList;
     ListView lv;
 
-    String id,role_id,imgUrl,name,image,status;
+    String id,role_id,imgUrl,name,image,status,imgPetUrl;
     SharedPreferences sharedPreferences;
-    ImageView imgUserImg;
-    TextView txtUser, txtRole,donationcount;
+    ImageView imgUserImg,imgPet;
+    TextView txtUser, txtRole;
     Intent intent;
-    double Sum;
+
+    AlertDialog.Builder alertbuilder;
+    AlertDialog dialog;
+
+    //
+    TextView petId,ownerId,petAllergies,petConditions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_donations);
+        setContentView(R.layout.activity_view_pet_health);
 
-        drawerLayout = findViewById(R.id.view_donation_drawer_layout);
-        navigationView = findViewById(R.id.view_donation_nav_view);
-        toolbar = findViewById(R.id.view_donation_toolbar);
-        lv = findViewById(R.id.listviewdonation);
-        donationcount = findViewById(R.id.total_donation_page);
+        drawerLayout = findViewById(R.id.view_health_drawer_layout);
+        navigationView = findViewById(R.id.view_health_nav_view);
+        toolbar = findViewById(R.id.view_health_toolbar);
+        lv = findViewById(R.id.listviewhealth);
         arrayList = new ArrayList<>();
+        petId = findViewById(R.id.pet_health_id_here);
+        ownerId = findViewById(R.id.pet_health_owner_id);
+        petAllergies = findViewById(R.id.pet_health_allergies);
+        petConditions = findViewById(R.id.pet_health_condition);
 
         sharedPreferences = getSharedPreferences("KEY_USER_INFO", MODE_PRIVATE);
         id = sharedPreferences.getString("KEY_ID", null);
@@ -85,7 +103,7 @@ public class ViewDonations extends AppCompatActivity implements NavigationView.O
 
         navigationView.setNavigationItemSelectedListener(this);
 
-        navigationView.setCheckedItem(R.id.nav_donation);
+        navigationView.setCheckedItem(R.id.nav_view_pethealth);
 
         View header = navigationView.getHeaderView(0);
         txtUser = header.findViewById(R.id.txtUsername);
@@ -96,64 +114,18 @@ public class ViewDonations extends AppCompatActivity implements NavigationView.O
         txtUser.setText(name);
         setRole(getRole(role_id));
 
+        View vivi = getLayoutInflater().inflate(R.layout.single_pet_health,null);
+        imgPetUrl = "https://pet-share.com/assets/images/pets/";
+
         final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Loading Fosters....");
+        progressDialog.setMessage("Loading Pet Health Records....");
         progressDialog.show();
 
+
         OkHttpClient client = new OkHttpClient();
+
         Request request = new Request.Builder()
-                .url(Url.donationurl)
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                progressDialog.dismiss();
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                progressDialog.dismiss();
-                if (response.isSuccessful()){
-                    final String myResponse = response.body().string();
-                ViewDonations.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            JSONObject jsonObject = new JSONObject(myResponse);
-                            JSONArray read = jsonObject.getJSONArray("data");
-                            for(int i = 0;i < read.length(); i++){
-                                JSONObject readdonation = read.getJSONObject(i);
-                                String ID = readdonation.getString("id");
-                                String USERID = readdonation.getString("user_id");
-                                String NAME = readdonation.getString("donation_name");
-                                String AMOUNT = readdonation.getString("donation_amount");
-                                String CURR = readdonation.getString("currency");
-
-                                HashMap<String,String> data = new HashMap<>();
-                                data.put("id",ID);
-                                data.put("user_id",USERID);
-                                data.put("donation_name", NAME);
-                                data.put("donation_amount",AMOUNT + " PHP");
-                                data.put("currency",CURR);
-
-                                arrayList.add(data);
-                                final ListAdapter listAdapter = new SimpleAdapter(ViewDonations.this,arrayList,R.layout.single_donation_data,
-                                        new String[]{"donation_name","donation_amount"}, new int[]{R.id.donation_name, R.id.donation_amount});
-
-                                lv.setAdapter(listAdapter);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-                }
-            }
-        });
-
-        request = new Request.Builder()
-                .url(Url.donationurl)
+                .url(Url.pethealth)
                 .build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -167,19 +139,43 @@ public class ViewDonations extends AppCompatActivity implements NavigationView.O
                 progressDialog.dismiss();
                 if(response.isSuccessful()){
                     final String myResponse = response.body().string();
-                    ViewDonations.this.runOnUiThread(new Runnable() {
+                    ViewPetHealth.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             try {
-                                JSONObject jsonObject = new JSONObject(myResponse);
-                                JSONArray donation = jsonObject.getJSONArray("data");
-                                for(int i = 0; i < donation.length(); i++){
-                                    JSONObject read = donation.getJSONObject(i);
-                                    Sum += Double.parseDouble(read.getString("donation_amount"));
-                                }
+                                JSONObject read = new JSONObject(myResponse);
+                                JSONArray jsonArray = read.getJSONArray("data");
+                                for (int i = 0; i < jsonArray.length(); i++){
+                                    JSONObject readhealth = jsonArray.getJSONObject(i);
+                                    String OWNERID = readhealth.getString("pet_owner_id");
+                                    String PETID = readhealth.getString("pet_id");
+                                    String ALLER = readhealth.getString("pet_allergies");
+                                    String COND = readhealth.getString("pet_existing_conditions");
 
-                                double res = Sum;
-                                donationcount.setText(res + " PHP");
+                                    HashMap<String,String> data = new HashMap<>();
+                                    data.put("pet_owner_id",OWNERID);
+                                    data.put("pet_id",PETID);
+                                    data.put("pet_allergies",ALLER);
+                                    data.put("pet_existing_conditions",COND);
+                                    arrayList.add(data);
+
+                                    ListAdapter listAdapter = new SimpleAdapter(ViewPetHealth.this,arrayList,R.layout.single_pet_health,
+                                            new String[]{"pet_owner_id","pet_id","pet_allergies","pet_existing_conditions"}, new int[]{R.id.pet_health_owner_id,R.id.pet_health_id_here,
+                                    R.id.pet_health_allergies,R.id.pet_health_condition});
+
+                                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                        @Override
+                                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                            alertbuilder = new AlertDialog.Builder(ViewPetHealth.this);
+                                            view = getLayoutInflater().inflate(R.layout.activity_admin_edit_pethealth,null);
+
+                                            alertbuilder.setView(view);
+                                            dialog = alertbuilder.create();
+                                            dialog.show();
+                                        }
+                                    });
+                                    lv.setAdapter(listAdapter);
+                                }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -188,6 +184,11 @@ public class ViewDonations extends AppCompatActivity implements NavigationView.O
                 }
             }
         });
+
+    }
+
+    public void loadImage(){
+        String url ="https://pet-share.com/assets/images/pets/";
     }
 
     private Toolbar setActionBar(Toolbar toolbar) {
@@ -236,7 +237,7 @@ public class ViewDonations extends AppCompatActivity implements NavigationView.O
                 String STATUS = intent.getStringExtra("KEY_STATUS_INT");
                 String EMAIL = intent.getStringExtra("KEY_EMAIL_INT");
                 intent = new Intent(this, editProfileActivity.class);
-                Toast.makeText(ViewDonations.this,"profile to: " + EMAIL,Toast.LENGTH_SHORT).show();
+                Toast.makeText(ViewPetHealth.this,"profile to: " + EMAIL,Toast.LENGTH_SHORT).show();
                 intent.putExtra("KEY_NAME_INT",NAME);
                 intent.putExtra("KEY_IMAGE_INT",IMAGE);
                 intent.putExtra("KEY_EMAIL_INT",EMAIL);
