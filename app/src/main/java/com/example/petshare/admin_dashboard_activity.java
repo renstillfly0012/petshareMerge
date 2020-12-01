@@ -10,7 +10,6 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -38,7 +37,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class dashboard_activity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class admin_dashboard_activity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
 
     private String TAG = "dashboard";
@@ -103,7 +102,7 @@ public class dashboard_activity extends AppCompatActivity implements NavigationV
                 if(response.isSuccessful()){
                     progressDialog.dismiss();
                     final String myResponse = response.body().string();
-                    dashboard_activity.this.runOnUiThread(new Runnable() {
+                    admin_dashboard_activity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             try {
@@ -135,7 +134,7 @@ public class dashboard_activity extends AppCompatActivity implements NavigationV
                 if(response.isSuccessful()) {
                     progressDialog.dismiss();
                     final String myResponse = response.body().string();
-                    dashboard_activity.this.runOnUiThread(new Runnable() {
+                    admin_dashboard_activity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             try {
@@ -166,7 +165,7 @@ public class dashboard_activity extends AppCompatActivity implements NavigationV
                 if(response.isSuccessful()){
                     progressDialog.dismiss();
                     final String myResponse = response.body().string();
-                    dashboard_activity.this.runOnUiThread(new Runnable() {
+                    admin_dashboard_activity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             try {
@@ -198,7 +197,7 @@ public class dashboard_activity extends AppCompatActivity implements NavigationV
                 if(response.isSuccessful()){
                     progressDialog.dismiss();
                     final String myResponse = response.body().string();
-                    dashboard_activity.this.runOnUiThread(new Runnable() {
+                    admin_dashboard_activity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             try {
@@ -321,7 +320,7 @@ public class dashboard_activity extends AppCompatActivity implements NavigationV
                 String STATUS = intent.getStringExtra("KEY_STATUS_INT");
                 String EMAIL = intent.getStringExtra("KEY_EMAIL_INT");
                 intent = new Intent(this, editProfileActivity.class);
-                Toast.makeText(dashboard_activity.this,"profile to: " + EMAIL,Toast.LENGTH_SHORT).show();
+                Toast.makeText(admin_dashboard_activity.this,"profile to: " + EMAIL,Toast.LENGTH_SHORT).show();
                 intent.putExtra("KEY_NAME_INT",NAME);
                 intent.putExtra("KEY_IMAGE_INT",IMAGE);
                 intent.putExtra("KEY_EMAIL_INT",EMAIL);

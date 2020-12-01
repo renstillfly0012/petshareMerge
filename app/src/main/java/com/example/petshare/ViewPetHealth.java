@@ -15,7 +15,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -304,7 +303,7 @@ public class ViewPetHealth extends AppCompatActivity implements NavigationView.O
 
         switch(menuItem.getItemId()){
             case R.id.nav_home:
-                intent = new Intent(this, dashboard_activity.class);
+                intent = new Intent(this, admin_dashboard_activity.class);
                 startActivity(intent);
                 break;
             case R.id.nav_donation:

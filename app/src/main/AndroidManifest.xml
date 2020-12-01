@@ -33,7 +33,7 @@
         <activity android:name=".howToAdopt" />
         <activity android:name=".editProfileActivity" />
         <activity android:name=".viewProfileActivity" />
-        <activity android:name=".dashboard_activity" />
+        <activity android:name=".admin_dashboard_activity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".slideActivity">
             <intent-filter>

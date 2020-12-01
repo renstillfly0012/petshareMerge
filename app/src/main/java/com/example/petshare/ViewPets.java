@@ -22,8 +22,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.text.Html;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,15 +41,12 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParser;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
-import java.io.IOError;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -468,7 +463,7 @@ public class ViewPets extends AppCompatActivity implements NavigationView.OnNavi
 
         switch(menuItem.getItemId()){
             case R.id.nav_home:
-                intent = new Intent(this, dashboard_activity.class);
+                intent = new Intent(this, admin_dashboard_activity.class);
                 startActivity(intent);
                 break;
             case R.id.nav_donation:

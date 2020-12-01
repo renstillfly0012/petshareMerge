@@ -83,7 +83,7 @@ public class viewProfileActivity extends AppCompatActivity implements Navigation
             @Override
             public void onClick(View v) {
                 Toast.makeText(viewProfileActivity.this,"save",Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent(getBaseContext(), dashboard_activity.class);
+//                Intent intent = new Intent(getBaseContext(), admin_dashboard_activity.class);
 //                startActivity(intent);
             }
         });

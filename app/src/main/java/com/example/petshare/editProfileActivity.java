@@ -90,7 +90,7 @@ public class editProfileActivity extends AppCompatActivity implements Navigation
             @Override
             public void onClick(View v) {
                 Toast.makeText(getBaseContext(),"save",Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent(getBaseContext(), dashboard_activity.class);
+//                Intent intent = new Intent(getBaseContext(), admin_dashboard_activity.class);
 //                startActivity(intent);
             }
         });
@@ -111,7 +111,7 @@ public class editProfileActivity extends AppCompatActivity implements Navigation
 
         switch(menuItem.getItemId()){
             case R.id.nav_home:
-                intent = new Intent(this, dashboard_activity.class);
+                intent = new Intent(this, admin_dashboard_activity.class);
                 startActivity(intent);
                 break;
             case R.id.nav_donation:
