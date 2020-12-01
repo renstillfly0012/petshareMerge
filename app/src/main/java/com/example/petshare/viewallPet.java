@@ -108,6 +108,7 @@ public abstract class viewallPet implements DatePickerDialog.OnDateSetListener, 
 
                 DatePickerDialog datePickerDialog;
                 datePickerDialog = new DatePickerDialog(context,  myDateListener, year, month, day);
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
                 datePickerDialog.show();
 
             }
@@ -204,17 +205,18 @@ public abstract class viewallPet implements DatePickerDialog.OnDateSetListener, 
             hour_x=i;
             minute_x=i1;
 
-            dateAndTime = month+"/"+day_x+"/"+year_x+"\n"+hour_x+":"+minute_x;
+            Calendar c = Calendar.getInstance();
+            c.set(Calendar.DAY_OF_MONTH, day_x);
+            c.set(Calendar.HOUR_OF_DAY, hour_x);
+            c.set(Calendar.MINUTE, minute_x);
 
-            if(hour<=12)
-            {
-                txtDate.setText(dateAndTime+" PM");
+            if(c.getTimeInMillis() >= Calendar.getInstance().getTimeInMillis() ){
+                dateAndTime = month+"/"+day_x+"/"+year_x+"\n"+hour_x+":"+minute_x;
+                txtDate.setText(dateAndTime);
             }else{
-                txtDate.setText(dateAndTime+" AM");
+                Toast.makeText(ct, "Put a valid date please", Toast.LENGTH_SHORT).show();
+
             }
-
-
-
             txtDate.setVisibility(View.VISIBLE);
         }
     };
