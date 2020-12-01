@@ -5,6 +5,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import okhttp3.Call;
@@ -14,19 +15,15 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -35,7 +32,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.ViewTarget;
 import com.google.android.material.navigation.NavigationView;
 
 import org.jetbrains.annotations.NotNull;
@@ -44,17 +40,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ViewPetHealth extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
+    final static String TAG = "ViewPetHealth";
+
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
 
-    ArrayList<HashMap<String,String>> arrayList;
+    ArrayList<HashMap<String,String>> arrayList,arrayListQR;
     ListView lv;
 
     String id,role_id,imgUrl,name,image,status,imgPetUrl;
@@ -66,8 +63,20 @@ public class ViewPetHealth extends AppCompatActivity implements NavigationView.O
     AlertDialog.Builder alertbuilder;
     AlertDialog dialog;
 
-    //
+    //health
     TextView petId,ownerId,petAllergies,petConditions;
+    //QRhealth
+    TextView qrdate,qrmed,qrdiag,qrtestp,qrtestr;
+    EditText qract,qrdesc,qrcom;
+    String QRID;
+    String QRDATE;
+    String QRDESC;
+    String QRDIAG;
+    String QRTESTP;
+    String QRTESTR;
+    String QRACT;
+    String QRMED;
+    String QRCOM;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +88,7 @@ public class ViewPetHealth extends AppCompatActivity implements NavigationView.O
         toolbar = findViewById(R.id.view_health_toolbar);
         lv = findViewById(R.id.listviewhealth);
         arrayList = new ArrayList<>();
+        arrayListQR = new ArrayList<>();
         petId = findViewById(R.id.pet_health_id_here);
         ownerId = findViewById(R.id.pet_health_owner_id);
         petAllergies = findViewById(R.id.pet_health_allergies);
@@ -148,7 +158,7 @@ public class ViewPetHealth extends AppCompatActivity implements NavigationView.O
                                 for (int i = 0; i < jsonArray.length(); i++){
                                     JSONObject readhealth = jsonArray.getJSONObject(i);
                                     String OWNERID = readhealth.getString("pet_owner_id");
-                                    String PETID = readhealth.getString("pet_id");
+                                    final String PETID = readhealth.getString("pet_id");
                                     String ALLER = readhealth.getString("pet_allergies");
                                     String COND = readhealth.getString("pet_existing_conditions");
 
@@ -165,9 +175,94 @@ public class ViewPetHealth extends AppCompatActivity implements NavigationView.O
 
                                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                         @Override
-                                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                        public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
+                                            final int index = i;
                                             alertbuilder = new AlertDialog.Builder(ViewPetHealth.this);
                                             view = getLayoutInflater().inflate(R.layout.activity_admin_edit_pethealth,null);
+                                            qrdate = view.findViewById(R.id.pet_qr_date);
+                                            qrdesc = view.findViewById(R.id.pet_qr_desc);
+                                            qrdiag = view.findViewById(R.id.pet_qr_diagnosis);
+                                            qrtestp = view.findViewById(R.id.pet_qr_test);
+                                            qrtestr = view.findViewById(R.id.pet_qr_results);
+                                            qract = view.findViewById(R.id.pet_qr_actions);
+                                            qrmed = view.findViewById(R.id.pet_qr_medication);
+                                            qrcom = view.findViewById(R.id.pet_qr_comment);
+
+
+                                            OkHttpClient client = new OkHttpClient();
+                                            Request request = new Request.Builder()
+                                                    .url("https://pet-share.com/api/admin/pethealth/view/" + arrayList.get(index).put("pet_id",PETID))
+                                                    .build();
+                                            client.newCall(request).enqueue(new Callback() {
+                                                @Override
+                                                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                                @Override
+                                                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                                                    if(response.isSuccessful()){
+                                                        final String myResponseQR = response.body().string();
+                                                        ViewPetHealth.this.runOnUiThread(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                int pos = index;
+                                                                try {
+                                                                    JSONArray arrReader = new JSONArray(myResponseQR);
+                                                                    for (int i = 0; i < arrReader.length(); i++){
+                                                                        JSONObject objReader = arrReader.getJSONObject(i);
+                                                                        //QRID = objReader.getString("id");
+                                                                        QRDATE = objReader.getString("date");
+                                                                        QRDESC = objReader.getString("description");
+                                                                        QRDIAG = objReader.getString("diagnosis");
+                                                                        QRTESTP = objReader.getString("test_performed");
+                                                                        QRTESTR = objReader.getString("test_results");
+                                                                        QRACT = objReader.getString("action");
+                                                                        QRMED = objReader.getString("medications");
+                                                                        QRCOM = objReader.getString("comments");
+
+                                                                        HashMap<String,String> data = new HashMap<>();
+                                                                        //data.put("id",QRID);
+                                                                        data.put("date",QRDATE);
+                                                                        data.put("description",QRDESC);
+                                                                        data.put("diagnosis",QRDIAG);
+                                                                        data.put("test_performed",QRTESTP);
+                                                                        data.put("test_results", QRTESTR);
+                                                                        data.put("action",QRACT);
+                                                                        data.put("medications",QRMED);
+                                                                        data.put("comments",QRCOM);
+
+                                                                        arrayListQR.add(data);
+
+                                                                        Log.e(TAG,"response: " + objReader);
+                                                                        Log.e(TAG,"response: " + QRACT);
+                                                                        qrdate.setText(arrayListQR.get(pos).put("date",QRDATE));
+                                                                        qrdesc.setText(arrayListQR.get(pos).put("description",QRDESC));
+                                                                        qrdiag.setText(arrayListQR.get(pos).put("diagnosis",QRDIAG));
+                                                                        qract.setText(arrayListQR.get(pos).put("action",QRACT));
+                                                                        if(arrayListQR.get(pos).put("test_results", QRTESTR).equals("Done")){
+                                                                            qrtestr.setText(arrayListQR.get(pos).put("test_results",QRTESTR));
+                                                                            qrtestr.setBackgroundColor(ContextCompat.getColor(ViewPetHealth.this,R.color.colorGreen));
+                                                                        } else if(arrayListQR.get(pos).put("test_results", QRTESTR).equals("done")){
+                                                                            qrtestr.setText(arrayListQR.get(pos).put("test_results",QRTESTR));
+                                                                            qrtestr.setBackgroundColor(ContextCompat.getColor(ViewPetHealth.this,R.color.colorGreen));
+                                                                        }else{
+                                                                            qrtestr.setText(arrayListQR.get(pos).put("test_results",QRTESTR));
+                                                                            qrtestr.setBackgroundColor(ContextCompat.getColor(ViewPetHealth.this,R.color.colorRed));
+                                                                        }
+                                                                        qrtestp.setText(arrayListQR.get(pos).put("test_performed",QRTESTP));
+                                                                        qrmed.setText(arrayListQR.get(pos).put("medications",QRMED));
+                                                                        qrcom.setText(arrayListQR.get(pos).put("comments",QRCOM));
+
+                                                                    }
+                                                                } catch (JSONException e) {
+                                                                    e.printStackTrace();
+                                                                }
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                            });
 
                                             alertbuilder.setView(view);
                                             dialog = alertbuilder.create();
@@ -186,6 +281,7 @@ public class ViewPetHealth extends AppCompatActivity implements NavigationView.O
         });
 
     }
+
 
     public void loadImage(){
         String url ="https://pet-share.com/assets/images/pets/";

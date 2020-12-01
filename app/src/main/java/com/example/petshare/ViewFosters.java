@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -50,7 +51,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ViewFosters extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class ViewFosters extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -96,6 +97,9 @@ public class ViewFosters extends AppCompatActivity implements NavigationView.OnN
     private ApiUser apiUser;
     private responseService responseService;
 
+    //Swipe refresh
+    SwipeRefreshLayout refreshLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,6 +111,7 @@ public class ViewFosters extends AppCompatActivity implements NavigationView.OnN
 //        imgview = findViewById(R.id.foster_image);
         imgbutton = findViewById(R.id.add_btn);
         arrayList = new ArrayList<>();
+        refreshLayout = findViewById(R.id.refresh_foster);
         lv = findViewById(R.id.listview);
 
         Intent intent = getIntent();
@@ -263,7 +268,16 @@ public class ViewFosters extends AppCompatActivity implements NavigationView.OnN
                                         }
                                     });
                                     lv.setAdapter(adapter);
-                                    String count = String.valueOf(arrayList.size());
+                                    refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                                        @Override
+                                        public void onRefresh() {
+                                            final ListAdapter adapter = new SimpleAdapter(ViewFosters.this,
+                                                    arrayList,R.layout.single_foster_data,new String[]{"name","status","image"},
+                                                    new int[]{R.id.foster_name,R.id.foster_status/*,R.id.foster_image*/});
+                                            lv.setAdapter(adapter);
+                                            refreshLayout.setRefreshing(false);
+                                        }
+                                    });
                                 }
 
                             } catch (JSONException e) {
@@ -344,6 +358,13 @@ public class ViewFosters extends AppCompatActivity implements NavigationView.OnN
                                     apiUser = retrofit.create(ApiUser.class);
                                     Log.e(TAG,"id: " + pos);
                                     delete_foster(pos);
+                                    progressDialog.dismiss();
+                                    refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                                        @Override
+                                        public void onRefresh() {
+                                            refreshLayout.setRefreshing(false);
+                                        }
+                                    });
 
                                 }
                             });
@@ -364,6 +385,7 @@ public class ViewFosters extends AppCompatActivity implements NavigationView.OnN
         });
 
     }
+
 
     public void setImage(String url){
        Glide.with(this).load(url).into(imgview);
