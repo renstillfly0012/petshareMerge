@@ -71,6 +71,32 @@ public class Constant {
         return retrofit.create(ApiUser.class);
     }
 
+    public static ApiPet getPetService(){
+        ApiPet getservice = getRetroFit().create(ApiPet.class);
+
+        return getservice;
+    }
+
+    public static ApiAdopt getAdoptService(){
+        ApiAdopt getservice = getRetroFit().create(ApiAdopt.class);
+
+        return getservice;
+    }
+
+    public static ApiDonate getDonateService(){
+
+        ApiDonate getservice = getRetroFit().create(ApiDonate.class);
+
+        return getservice;
+
+    }
+
+    public static ApiReport getReportService(){
+
+        ApiReport getservice = getRetroFit().create(ApiReport.class);
+
+        return getservice;
+    }
 
 }
 

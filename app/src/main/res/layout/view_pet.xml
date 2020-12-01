@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="30dp">
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/pspcalogo"
+        android:id="@+id/viewpet_img"
+        />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/viewpet_txtPetCode"
+        android:padding="10dp"
+        android:layout_marginTop="16dp"
+        android:text="Insert Pet Code"
+        android:gravity="center"
+        />
+
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/viewpet_txtPetBreed"
+        android:padding="10dp"
+        android:layout_marginTop="16dp"
+        android:text="Insert Pet Breed"
+        android:gravity="center"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/viewpet_txtPetDescription"
+        android:padding="10dp"
+        android:layout_marginTop="16dp"
+        android:text="Insert Pet Description"
+        android:gravity="center"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/viewpet_txtDate"
+        android:padding="10dp"
+        android:layout_marginTop="16dp"
+        android:text="Insert Date"
+        android:visibility="invisible"
+        android:gravity="center"
+        />
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/viewpet_btnDate"
+        android:background="@drawable/btn_bg"
+        android:text="Book a Date"/>
+
+
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_gravity="center"
+    android:layout_marginTop="30dp"
+    android:paddingLeft="80dp">
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/viewpet_btnCancel"
+        android:layout_marginRight="32dp"
+        android:text="Cancel"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/viewpet_btnAdopt"
+        android:background="@color/colorGreen"
+        android:textColor="@color/colorYellow"
+        android:text="Submit"/>
+
+
+
+</LinearLayout>
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

@@ -69,7 +69,7 @@ public class HowViewPagerAdapater extends PagerAdapter {
                 btnBack.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        intent = new Intent(ctx, admin_dashboard_activity.class);
+                        intent = new Intent(ctx, dashboard_activity.class);
                         ctx.startActivity(intent);
                     }
                 });

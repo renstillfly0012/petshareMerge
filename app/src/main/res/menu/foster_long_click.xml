@@ -7,10 +7,5 @@
         android:title="Delete"
         app:showAsAction="never"
         />
-    <item
-        android:id="@+id/disable_user"
-        android:orderInCategory="100"
-        android:title="Disable"
-        app:showAsAction="never"
-        />
+
 </menu>

@@ -156,7 +156,6 @@ public class MainActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
 
-
                         MainActivity.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -164,7 +163,14 @@ public class MainActivity extends AppCompatActivity {
                                 dialog.dismiss();
 
                                 Toast.makeText(getBaseContext(), "Welcome " + email + "\n You have Successfully Login ", LENGTH_LONG).show();
-                                intent = new Intent(getBaseContext(), admin_dashboard_activity.class);
+
+                                if(jsonUserData.get("role_id") == "1") {
+
+                                    intent = new Intent(MainActivity.this, admin_dashboard_activity.class);
+                                }else{
+                                    intent = new Intent(MainActivity.this, dashboard_activity.class);
+                                }
+
                                 intent.putExtra("KEY_ID_INT", jsonUserData.get("id"));
                                 intent.putExtra("KEY_NAME_INT", jsonUserData.get("name"));
                                 intent.putExtra("KEY_ROLE_ID_INT", jsonUserData.get("role_id"));
